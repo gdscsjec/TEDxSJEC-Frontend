@@ -1,0 +1,247 @@
+import axios from "axios";
+import { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
+
+// https://razorpay.com/docs/payments/payment-gateway/web-integration/standard/build-integration/#12-integrate-with-checkout-on-client-side
+
+const Form = () => {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+  });
+
+  const [otpHashData, setOtpHashData] = useState();
+
+  const [orderId, setOrderId] = useState();
+
+  const [status, setStatus] = useState(false);
+
+  const [otp, setOtp] = useState();
+
+  const [image, setImage] = useState("");
+
+  const OnChangeValue = (e) => {
+    const { value, name } = e.target;
+    setForm((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
+  };
+
+  const OnSubmit = async (e) => {
+    e.preventDefault();
+    let formdata = new FormData();
+    formdata.append("email", form.email);
+    formdata.append("phone", `+91${form.phone}`);
+    formdata.append("otp", otp);
+    formdata.append("hash", otpHashData.hash);
+    const request = await axios.post(
+      "http://localhost:8080/api/verify-otp",
+      formdata
+    );
+    if (request.status === 200) {
+      toast.success("OTP Verified Successfully!!");
+      const { id, amount, currency } = request.data.payment.orderId;
+      console.log(id, amount, currency);
+      setOrderId(id);
+      await OnSubmitOrder(id, amount, currency);
+    } else {
+      toast.error("Something went wrong!!");
+    }
+  };
+
+  const OnSubmitOrder = async (id, amount, currency) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onerror = () => {
+      alert("Razorpay SDK failed to load. Are you online?");
+    };
+    script.onload = async () => {
+      try {
+        const options = {
+          key: "rzp_test_6nDlvCH0abXQJN",
+          amount: amount,
+          currency: currency,
+          name: "St Joseph Engineering College",
+          description: "TEDxSJEC 2022",
+          image: "https://sjec.ac.in/images/sjec-logo.png",
+          order_id: id,
+          handler: async function (response) {
+            console.log(response);
+            toast.success("Payment Successful!!");
+          },
+          prefill: {
+            name: form.name,
+            email: form.email,
+            contact: form.phone,
+          },
+          notes: {
+            address: "TEDxSJEC 2022",
+          },
+          theme: {
+            color: "#ff2a05",
+          },
+        };
+
+        const paymentObject = new window.Razorpay(options);
+        paymentObject.open();
+      } catch (err) {
+        alert(err);
+      }
+    };
+    document.body.appendChild(script);
+  };
+
+  const onClickOtp = async (e) => {
+    e.preventDefault();
+    switch (true) {
+      case form.name === "":
+        toast.error("Please enter your name");
+        break;
+      case form.email === "":
+        toast.error("Please enter your email");
+        break;
+      case form.phone === "":
+        toast.error("Please enter your phone number");
+        break;
+      case form.phone.length < 10:
+        toast.error("Please enter valid phone number");
+        break;
+      case form.phone.length > 10:
+        toast.error("Please enter valid phone number");
+        break;
+      case !image:
+        toast.error("Please upload your image");
+        break;
+      default: {
+        setStatus(true);
+        let formdata = new FormData();
+        formdata.append("email", form.email);
+        formdata.append("phone", `+91${form.phone}`);
+        const request = await axios.post(
+          "http://localhost:8080/api/send-otp",
+          formdata
+        );
+        if (request.status === 200) {
+          toast.success("OTP sent successfully!!");
+          setOtpHashData(request.data);
+          console.log(request.data);
+        } else {
+          toast.error("Something went wrong!!");
+        }
+      }
+    }
+  };
+
+  return (
+    <>
+      <form onSubmit={OnSubmit}>
+        <div className="mb-3">
+          <label for="exampleInputEmail1" className="form-label">
+            Name
+          </label>
+          <input
+            disabled={status}
+            required
+            value={form.name}
+            onChange={OnChangeValue}
+            name="name"
+            type="text"
+            className="form-control"
+            id="exampleInputEmail1"
+            aria-describedby="emailHelp"
+          />
+        </div>
+        <div className="mb-3">
+          <label for="exampleInputEmail1" className="form-label">
+            Email address
+          </label>
+          <input
+            disabled={status}
+            value={form.email}
+            onChange={OnChangeValue}
+            name="email"
+            required
+            type="email"
+            className="form-control"
+            id="exampleInputEmail1"
+            aria-describedby="emailHelp"
+          />
+        </div>
+        <div className="mb-3">
+          <label for="exampleInputEmail1" className="form-label">
+            Phone Number
+          </label>
+          <input
+            disabled={status}
+            value={form.phone}
+            onChange={OnChangeValue}
+            name="phone"
+            required
+            type="number"
+            className="form-control"
+            id="exampleInputEmail1"
+            aria-describedby="emailHelp"
+          />
+        </div>
+        <div className="mb-3">
+          <label for="formFile" className="form-label">
+            Upload your image
+          </label>
+          <input
+            disabled={status}
+            onChange={(e) => setImage(e.target.files[0])}
+            required="true"
+            accept="image/png, image/jpeg, image/jpg"
+            className="form-control"
+            type="file"
+            id="formFile"
+          />
+        </div>
+
+        <div className="row">
+          <div className="col-sm-4">
+            <button
+              disabled={status}
+              type="action"
+              onClick={onClickOtp}
+              className="btn btn-primary"
+            >
+              Send OTP
+            </button>
+          </div>
+          <div className="col-sm-8">
+            <input
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              name="otp"
+              required
+              placeholder="Enter OTP"
+              type="number"
+              className="form-control"
+              id="exampleInputEmail1"
+              aria-describedby="emailHelp"
+            />
+          </div>
+        </div>
+
+        <button
+          disabled={!status}
+          style={{
+            width: "100%",
+          }}
+          type="submit"
+          className=" btn btn-primary btn btn-block mt-3"
+        >
+          Submit
+        </button>
+      </form>
+      <Toaster position="top-right" reverseOrder={false} />
+    </>
+  );
+};
+
+export default Form;
