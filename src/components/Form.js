@@ -199,7 +199,8 @@ const Form = () => {
             onChange={OnChangeValue}
             name="phone"
             required
-            type="number"
+            maxLength={10}
+            type="tel"
             className="form-control"
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
@@ -238,11 +239,10 @@ const Form = () => {
               onChange={(e) => setOtp(e.target.value)}
               name="otp"
               required
+              maxLength={6}
               placeholder="Enter OTP"
               type="number"
               className="form-control"
-              id="exampleInputEmail1"
-              aria-describedby="emailHelp"
             />
           </div>
         </div>
