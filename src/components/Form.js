@@ -226,7 +226,7 @@ const Form = () => {
               disabled={status}
               type="action"
               onClick={onClickOtp}
-              className="btn btn-primary"
+              className="btn btn-danger"
             >
               Send OTP
             </button>
@@ -253,7 +253,7 @@ const Form = () => {
             width: "100%",
           }}
           type="submit"
-          className=" btn btn-primary btn btn-block mt-3"
+          className=" btn btn-danger btn btn-block mt-3"
         >
           Submit
         </button>
