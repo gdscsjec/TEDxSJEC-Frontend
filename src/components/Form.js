@@ -4,6 +4,8 @@ import toast, { Toaster } from "react-hot-toast";
 
 // https://razorpay.com/docs/payments/payment-gateway/web-integration/standard/build-integration/#12-integrate-with-checkout-on-client-side
 
+//https://razorpay.com/docs/payments/payment-gateway/rainy-day/capture-settings/api/#:~:text=Once%20your%20customer%20completes%20a,status%20from%20the%20bank%20immediately.
+
 const Form = () => {
   const [form, setForm] = useState({
     name: "",
@@ -12,8 +14,6 @@ const Form = () => {
   });
 
   const [otpHashData, setOtpHashData] = useState();
-
-  const [orderId, setOrderId] = useState();
 
   const [status, setStatus] = useState(false);
 
@@ -45,8 +45,7 @@ const Form = () => {
     if (request.status === 200) {
       toast.success("OTP Verified Successfully!!");
       const { id, amount, currency } = request.data.payment.orderId;
-      console.log(id, amount, currency);
-      setOrderId(id);
+      console.log(request.data.payment.orderId);
       await OnSubmitOrder(id, amount, currency);
     } else {
       toast.error("Something went wrong!!");
@@ -57,7 +56,7 @@ const Form = () => {
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.onerror = () => {
-      alert("Razorpay SDK failed to load. Are you online?");
+      toast.error("Something went wrong!!");
     };
     script.onload = async () => {
       try {
@@ -71,7 +70,27 @@ const Form = () => {
           order_id: id,
           handler: async function (response) {
             console.log(response);
-            toast.success("Payment Successful!!");
+            let formdata = new FormData();
+            formdata.append("name", form.name);
+            formdata.append("email", form.email);
+            formdata.append("phone", `+91${form.phone}`);
+            formdata.append("avatar", image);
+            formdata.append("razorpay_order_id", response.razorpay_order_id);
+            formdata.append(
+              "razorpay_payment_id",
+              response.razorpay_payment_id
+            );
+            formdata.append("razorpay_signature", response.razorpay_signature);
+            const request = await axios.post(
+              "http://localhost:8080/api/payment-success",
+              formdata
+            );
+
+            if (request.status === 200) {
+              toast.success("Payment Successful!!");
+            } else {
+              toast.error("Something went wrong!!");
+            }
           },
           prefill: {
             name: form.name,
@@ -89,7 +108,7 @@ const Form = () => {
         const paymentObject = new window.Razorpay(options);
         paymentObject.open();
       } catch (err) {
-        alert(err);
+        toast.error("Something went wrong!!");
       }
     };
     document.body.appendChild(script);
@@ -128,7 +147,6 @@ const Form = () => {
         if (request.status === 200) {
           toast.success("OTP sent successfully!!");
           setOtpHashData(request.data);
-          console.log(request.data);
         } else {
           toast.error("Something went wrong!!");
         }
@@ -215,6 +233,7 @@ const Form = () => {
           </div>
           <div className="col-sm-8">
             <input
+              disabled={!status}
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
               name="otp"
