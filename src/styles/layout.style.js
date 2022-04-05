@@ -17,6 +17,10 @@ const ChildWrapper = styled.div`
   background-color: white;
   border-radius: 10px;
   box-shadow: 0px 0px 10px #000000;
+  @media (max-width: 600px) {
+    width: 90vw;
+    height: max-content;
+  }
 `;
 
 const ImageWrapper = styled.img`

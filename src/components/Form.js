@@ -221,7 +221,7 @@ const Form = () => {
         </div>
 
         <div className="row">
-          <div className="col-sm-4">
+          <div className="col">
             <button
               disabled={status}
               type="action"
@@ -231,7 +231,7 @@ const Form = () => {
               Send OTP
             </button>
           </div>
-          <div className="col-sm-8">
+          <div className="col">
             <input
               disabled={!status}
               value={otp}
