@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Registration from "../pages/Registration";
-import Ticket from "../pages/Ticket";
+import Registration from "./pages/Registration";
+import Ticket from "./pages/Ticket";
 
 const App = () => {
   return (
