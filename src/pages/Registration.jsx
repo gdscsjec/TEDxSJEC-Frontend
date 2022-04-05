@@ -9,7 +9,11 @@ import {
 const Registration = () => {
   return (
     <ParentWrapper>
-      <ImageWrapper src="/static/logo.png" alt="TEDxSJEC Logo" />
+      <ImageWrapper
+        draggable="false"
+        src="/static/logo.png"
+        alt="TEDxSJEC Logo"
+      />
       <ChildWrapper>
         <Form />
       </ChildWrapper>
