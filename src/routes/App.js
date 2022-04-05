@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Registration from "../pages/Registration";
 import Ticket from "../pages/Ticket";
 
-const index = () => {
+const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Registration />} />
@@ -12,4 +12,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default App;
