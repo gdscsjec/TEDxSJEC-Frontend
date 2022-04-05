@@ -39,7 +39,7 @@ const Form = () => {
     formdata.append("otp", otp);
     formdata.append("hash", otpHashData.hash);
     const request = await axios.post(
-      "http://localhost:8080/api/verify-otp",
+      "https://ted.vigneshcodes.in/api/verify-otp",
       formdata
     );
     if (request.status === 200) {
@@ -82,7 +82,7 @@ const Form = () => {
             );
             formdata.append("razorpay_signature", response.razorpay_signature);
             const request = await axios.post(
-              "http://localhost:8080/api/payment-success",
+              "https://ted.vigneshcodes.in/api/payment-success",
               formdata
             );
 
@@ -141,7 +141,7 @@ const Form = () => {
         formdata.append("email", form.email);
         formdata.append("phone", `+91${form.phone}`);
         const request = await axios.post(
-          "http://localhost:8080/api/send-otp",
+          "https://ted.vigneshcodes.in/api/send-otp",
           formdata
         );
         if (request.status === 200) {
