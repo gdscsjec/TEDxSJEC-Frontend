@@ -1,19 +1,12 @@
 import React from "react";
 import Form from "../components/Form";
-import {
-  ParentWrapper,
-  ChildWrapper,
-  ImageWrapper,
-} from "../styles/layout.style";
+import Logo from "../components/Logo";
+import { ParentWrapper, ChildWrapper } from "../styles/layout.style";
 
 const Registration = () => {
   return (
     <ParentWrapper>
-      <ImageWrapper
-        draggable="false"
-        src="/static/logo.png"
-        alt="TEDxSJEC Logo"
-      />
+      <Logo />
       <ChildWrapper>
         <Form />
       </ChildWrapper>
