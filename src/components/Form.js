@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import validator from "validator";
 
 // https://razorpay.com/docs/payments/payment-gateway/web-integration/standard/build-integration/#12-integrate-with-checkout-on-client-side
 
@@ -120,16 +121,10 @@ const Form = () => {
       case form.name === "":
         toast.error("Please enter your name");
         break;
-      case form.email === "":
-        toast.error("Please enter your email");
+      case validator.isEmail(form.email) === false:
+        toast.error("Please enter valid email");
         break;
-      case form.phone === "":
-        toast.error("Please enter your phone number");
-        break;
-      case form.phone.length < 10:
-        toast.error("Please enter valid phone number");
-        break;
-      case form.phone.length > 10:
+      case validator.isMobilePhone(form.phone, "en-IN") === false:
         toast.error("Please enter valid phone number");
         break;
       case !image:
