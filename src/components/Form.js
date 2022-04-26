@@ -1,13 +1,25 @@
 import axios from "axios";
+import { useContext } from "react";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import validator from "validator";
+import loadingContext from "../context/loadingContext";
 
 // https://razorpay.com/docs/payments/payment-gateway/web-integration/standard/build-integration/#12-integrate-with-checkout-on-client-side
 
 //https://razorpay.com/docs/payments/payment-gateway/rainy-day/capture-settings/api/#:~:text=Once%20your%20customer%20completes%20a,status%20from%20the%20bank%20immediately.
 
 const Form = () => {
+  const a = useContext(loadingContext);
+
+  const callSetLoading = () => {
+    a.setLoading(true);
+  };
+
+  const stopLoading = () => {
+    a.setLoading(false);
+  };
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -33,6 +45,7 @@ const Form = () => {
   };
 
   const OnSubmit = async (e) => {
+    callSetLoading();
     e.preventDefault();
     let formdata = new FormData();
     formdata.append("email", form.email);
@@ -58,6 +71,7 @@ const Form = () => {
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.onerror = () => {
       toast.error("Something went wrong!!");
+      stopLoading();
     };
     script.onload = async () => {
       try {
@@ -88,8 +102,10 @@ const Form = () => {
             );
 
             if (request.status === 200) {
+              stopLoading();
               toast.success("Payment Successful!!");
             } else {
+              stopLoading();
               toast.error("Something went wrong!!");
             }
           },
@@ -132,6 +148,7 @@ const Form = () => {
         break;
       default: {
         setStatus(true);
+        callSetLoading();
         let formdata = new FormData();
         formdata.append("email", form.email);
         formdata.append("phone", `+91${form.phone}`);
@@ -140,9 +157,11 @@ const Form = () => {
           formdata
         );
         if (request.status === 200) {
+          stopLoading();
           toast.success("OTP sent successfully!!");
           setOtpHashData(request.data);
         } else {
+          stopLoading();
           toast.error("Something went wrong!!");
         }
       }
