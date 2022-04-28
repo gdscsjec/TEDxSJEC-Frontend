@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import validator from "validator";
@@ -11,6 +11,8 @@ import loadingContext from "../context/loadingContext";
 
 const Form = () => {
   const a = useContext(loadingContext);
+
+  const fileButton= useRef(null);
 
   const callSetLoading = () => {
     a.setLoading(true);
@@ -32,8 +34,10 @@ const Form = () => {
 
   const [otp, setOtp] = useState();
 
-  const [image, setImage] = useState("");
-
+  const [image, setImage] = useState('');
+  // ImgUrl is used to get ObjectURL of the image
+  const [imageUrl, setImageUrl] = useState("/static/default_image.png")
+  
   const OnChangeValue = (e) => {
     const { value, name } = e.target;
     setForm((prev) => {
@@ -168,9 +172,34 @@ const Form = () => {
     }
   };
 
+  const saveImage = (e) => {
+    const img = URL.createObjectURL(e.target.files[0]);
+    setTimeout(() => {
+      setImage(e.target.files[0])
+      setImageUrl(img)
+    }, 100);
+  }
+
   return (
     <>
       <form onSubmit={OnSubmit}>
+        <div className="mb-3">
+          <div className="avatar-container">
+            <img className="avatar" alt="avatar" id="avatarImage" src={imageUrl} width="200" height="200" />
+              <input
+                disabled={status}
+                style={{ display: 'none' }}
+                onChange={saveImage}
+                required="true"
+                accept="image/png, image/jpeg, image/jpg"
+                className="form-control"
+                type="file"
+                id="formFile"
+                ref={fileButton}
+              />
+              <input type="button" className="btn btn-tedx mt-2" onClick={() => fileButton.current.click()} value="Upload Image" />
+          </div>
+        </div>
         <div className="mb-3">
           <label for="exampleInputEmail1" className="form-label">
             Name
@@ -220,20 +249,6 @@ const Form = () => {
             aria-describedby="emailHelp"
           />
         </div>
-        <div className="mb-3">
-          <label for="formFile" className="form-label">
-            Upload your image
-          </label>
-          <input
-            disabled={status}
-            onChange={(e) => setImage(e.target.files[0])}
-            required="true"
-            accept="image/png, image/jpeg, image/jpg"
-            className="form-control"
-            type="file"
-            id="formFile"
-          />
-        </div>
 
         <div className="row">
           <div className="col">
@@ -241,7 +256,7 @@ const Form = () => {
               disabled={status}
               type="action"
               onClick={onClickOtp}
-              className="btn btn-danger"
+              className="btn btn-tedx"
             >
               Send OTP
             </button>
@@ -267,7 +282,7 @@ const Form = () => {
             width: "100%",
           }}
           type="submit"
-          className=" btn btn-danger btn btn-block mt-3"
+          className=" btn btn-tedx btn btn-block mt-3"
         >
           Submit
         </button>

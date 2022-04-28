@@ -11,7 +11,7 @@ const ParentWrapper = styled.div`
 `;
 
 const ChildWrapper = styled.div`
-  padding: 20px;
+  padding: 40px 40px;
   height: max-content;
   width: max-content;
   background-color: white;
@@ -29,4 +29,46 @@ const ImageWrapper = styled.img`
   margin: 10px;
 `;
 
-export { ParentWrapper, ChildWrapper, ImageWrapper };
+const TicketTitle = styled.div`
+  font-size: 2.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: center;
+`
+
+const TicketHeading = styled.div`
+  font-weight: bold;
+`
+
+const TicketSection = styled.div`
+  padding: 10px 20px;
+`
+
+const TicketText = styled.div`
+  font-size: 0.9rem;
+`
+
+const QRCodeContainer = styled.div`
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+`
+
+const OrderIdContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`
+
+const OrderId = styled.div`
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-top: 1.5rem;
+  text-align: center;
+`
+
+const ErrorText = styled.div`
+  color: #fff;
+  font-size: 2rem;
+`
+
+export { ParentWrapper, ChildWrapper, ImageWrapper, TicketTitle, TicketSection, TicketHeading, TicketText, QRCodeContainer, OrderIdContainer, OrderId, ErrorText };
