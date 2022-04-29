@@ -68,8 +68,12 @@ const Form = () => {
       const { id, amount, currency } = request.data.payment.orderId;
       console.log(request.data.payment.orderId);
       await OnSubmitOrder(id, amount, currency);
+    } else if (request.status === 400) {
+      stopLoading();
+      toast.error("OTP Verification Failed!!");
     } else {
-      toast.error("Something went wrong!!");
+      stopLoading();
+      toast.error("Something Went Wrong!!");
     }
   };
 
@@ -132,6 +136,7 @@ const Form = () => {
         const paymentObject = new window.Razorpay(options);
         paymentObject.open();
       } catch (err) {
+        stopLoading();
         toast.error("Something went wrong!!");
       }
     };
