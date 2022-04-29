@@ -5,9 +5,10 @@ const ParentWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: max-content;
   width: 100vw;
   background-color: black;
+  overflow-x: hidden;
 `;
 
 const ChildWrapper = styled.div`
@@ -34,41 +35,53 @@ const TicketTitle = styled.div`
   font-weight: bold;
   margin-bottom: 1rem;
   text-align: center;
-`
+`;
 
 const TicketHeading = styled.div`
   font-weight: bold;
-`
+`;
 
 const TicketSection = styled.div`
   padding: 10px 20px;
-`
+`;
 
 const TicketText = styled.div`
   font-size: 0.9rem;
-`
+`;
 
 const QRCodeContainer = styled.div`
   margin-top: 1.5rem;
   display: flex;
   justify-content: center;
-`
+`;
 
 const OrderIdContainer = styled.div`
   display: flex;
   justify-content: center;
-`
+`;
 
 const OrderId = styled.div`
   font-size: 1.1rem;
   font-weight: bold;
   margin-top: 1.5rem;
   text-align: center;
-`
+`;
 
 const ErrorText = styled.div`
   color: #fff;
   font-size: 2rem;
-`
+`;
 
-export { ParentWrapper, ChildWrapper, ImageWrapper, TicketTitle, TicketSection, TicketHeading, TicketText, QRCodeContainer, OrderIdContainer, OrderId, ErrorText };
+export {
+  ParentWrapper,
+  ChildWrapper,
+  ImageWrapper,
+  TicketTitle,
+  TicketSection,
+  TicketHeading,
+  TicketText,
+  QRCodeContainer,
+  OrderIdContainer,
+  OrderId,
+  ErrorText,
+};

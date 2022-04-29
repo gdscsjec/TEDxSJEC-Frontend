@@ -3,6 +3,7 @@ import { useContext, useRef } from "react";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import validator from "validator";
+import { useNavigate } from "react-router-dom";
 import loadingContext from "../context/loadingContext";
 
 // https://razorpay.com/docs/payments/payment-gateway/web-integration/standard/build-integration/#12-integrate-with-checkout-on-client-side
@@ -12,7 +13,9 @@ import loadingContext from "../context/loadingContext";
 const Form = () => {
   const a = useContext(loadingContext);
 
-  const fileButton= useRef(null);
+  const fileButton = useRef(null);
+
+  const navigate = useNavigate();
 
   const callSetLoading = () => {
     a.setLoading(true);
@@ -34,10 +37,10 @@ const Form = () => {
 
   const [otp, setOtp] = useState();
 
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState("");
   // ImgUrl is used to get ObjectURL of the image
-  const [imageUrl, setImageUrl] = useState("/static/default_image.png")
-  
+  const [imageUrl, setImageUrl] = useState("/static/default_image.png");
+
   const OnChangeValue = (e) => {
     const { value, name } = e.target;
     setForm((prev) => {
@@ -88,7 +91,6 @@ const Form = () => {
           image: "https://sjec.ac.in/images/sjec-logo.png",
           order_id: id,
           handler: async function (response) {
-            console.log(response);
             let formdata = new FormData();
             formdata.append("name", form.name);
             formdata.append("email", form.email);
@@ -108,6 +110,7 @@ const Form = () => {
             if (request.status === 200) {
               stopLoading();
               toast.success("Payment Successful!!");
+              navigate(`/ticket/${response.razorpay_order_id}`);
             } else {
               stopLoading();
               toast.error("Something went wrong!!");
@@ -175,29 +178,42 @@ const Form = () => {
   const saveImage = (e) => {
     const img = URL.createObjectURL(e.target.files[0]);
     setTimeout(() => {
-      setImage(e.target.files[0])
-      setImageUrl(img)
+      setImage(e.target.files[0]);
+      setImageUrl(img);
     }, 100);
-  }
+  };
 
   return (
     <>
       <form onSubmit={OnSubmit}>
         <div className="mb-3">
           <div className="avatar-container">
-            <img className="avatar" alt="avatar" id="avatarImage" src={imageUrl} width="200" height="200" />
-              <input
-                disabled={status}
-                style={{ display: 'none' }}
-                onChange={saveImage}
-                required="true"
-                accept="image/png, image/jpeg, image/jpg"
-                className="form-control"
-                type="file"
-                id="formFile"
-                ref={fileButton}
-              />
-              <input type="button" className="btn btn-tedx mt-2" onClick={() => fileButton.current.click()} value="Upload Image" />
+            <img
+              className="avatar"
+              alt="avatar"
+              id="avatarImage"
+              src={imageUrl}
+              draggable="false"
+              width="200"
+              height="200"
+            />
+            <input
+              disabled={status}
+              style={{ display: "none" }}
+              onChange={saveImage}
+              required="true"
+              accept="image/png, image/jpeg, image/jpg"
+              className="form-control"
+              type="file"
+              id="formFile"
+              ref={fileButton}
+            />
+            <input
+              type="button"
+              className="btn btn-tedx mt-2"
+              onClick={() => fileButton.current.click()}
+              value="Upload Image"
+            />
           </div>
         </div>
         <div className="mb-3">
