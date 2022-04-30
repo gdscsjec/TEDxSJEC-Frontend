@@ -6,10 +6,6 @@ import validator from "validator";
 import { useNavigate } from "react-router-dom";
 import loadingContext from "../context/loadingContext";
 
-// https://razorpay.com/docs/payments/payment-gateway/web-integration/standard/build-integration/#12-integrate-with-checkout-on-client-side
-
-//https://razorpay.com/docs/payments/payment-gateway/rainy-day/capture-settings/api/#:~:text=Once%20your%20customer%20completes%20a,status%20from%20the%20bank%20immediately.
-
 const Form = () => {
   const a = useContext(loadingContext);
 
@@ -60,7 +56,7 @@ const Form = () => {
     formdata.append("otp", otp);
     formdata.append("hash", otpHashData.hash);
     const request = await axios.post(
-      "https://ted.vigneshcodes.in/api/verify-otp",
+      `${process.env.REACT_APP_SERVER_URL}/api/verify-otp`,
       formdata
     );
     if (request.status === 200) {
@@ -95,10 +91,10 @@ const Form = () => {
           image: "https://sjec.ac.in/images/sjec-logo.png",
           order_id: id,
           modal: {
-            ondismiss: function() {
+            ondismiss: function () {
               stopLoading();
               toast.error("Payment cancelled!");
-            }
+            },
           },
           handler: async function (response) {
             let formdata = new FormData();
@@ -113,7 +109,7 @@ const Form = () => {
             );
             formdata.append("razorpay_signature", response.razorpay_signature);
             const request = await axios.post(
-              "https://ted.vigneshcodes.in/api/payment-success",
+              `${process.env.REACT_APP_SERVER_URL}/api/payment-success`,
               formdata
             );
 
@@ -171,7 +167,7 @@ const Form = () => {
         formdata.append("email", form.email);
         formdata.append("phone", `+91${form.phone}`);
         const request = await axios.post(
-          "https://ted.vigneshcodes.in/api/send-otp",
+          `${process.env.REACT_APP_SERVER_URL}/api/send-otp`,
           formdata
         );
         if (request.status === 200) {
