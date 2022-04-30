@@ -55,21 +55,18 @@ const Form = () => {
     formdata.append("phone", `+91${form.phone}`);
     formdata.append("otp", otp);
     formdata.append("hash", otpHashData.hash);
-    const request = await axios.post(
-      `${process.env.REACT_APP_SERVER_URL}/api/verify-otp`,
-      formdata
-    );
+    const request = await axios
+      .post(`${process.env.REACT_APP_SERVER_URL}/api/verify-otp`, formdata)
+      .catch((err) => {
+        stopLoading();
+        toast.error(err.response.data.message);
+      });
+
     if (request.status === 200) {
-      toast.success("OTP Verified Successfully!!");
+      toast.success("OTP verified successfully");
       const { id, amount, currency } = request.data.payment.orderId;
       console.log(request.data.payment.orderId);
       await OnSubmitOrder(id, amount, currency);
-    } else if (request.status === 400) {
-      stopLoading();
-      toast.error("OTP Verification Failed!!");
-    } else {
-      stopLoading();
-      toast.error("Something Went Wrong!!");
     }
   };
 
@@ -83,7 +80,7 @@ const Form = () => {
     script.onload = async () => {
       try {
         const options = {
-          key: "rzp_test_6nDlvCH0abXQJN",
+          key: process.env.REACT_APP_RZR_KEY,
           amount: amount,
           currency: currency,
           name: "St Joseph Engineering College",
@@ -108,18 +105,20 @@ const Form = () => {
               response.razorpay_payment_id
             );
             formdata.append("razorpay_signature", response.razorpay_signature);
-            const request = await axios.post(
-              `${process.env.REACT_APP_SERVER_URL}/api/payment-success`,
-              formdata
-            );
+            const request = await axios
+              .post(
+                `${process.env.REACT_APP_SERVER_URL}/api/payment-success`,
+                formdata
+              )
+              .catch((err) => {
+                stopLoading();
+                toast.error(err.response.data.message);
+              });
 
             if (request.status === 200) {
               stopLoading();
-              toast.success("Payment Successful!!");
+              toast.success("Payment successful");
               navigate(`/ticket/${response.razorpay_order_id}`);
-            } else {
-              stopLoading();
-              toast.error("Something went wrong!!");
             }
           },
           prefill: {
@@ -166,17 +165,16 @@ const Form = () => {
         let formdata = new FormData();
         formdata.append("email", form.email);
         formdata.append("phone", `+91${form.phone}`);
-        const request = await axios.post(
-          `${process.env.REACT_APP_SERVER_URL}/api/send-otp`,
-          formdata
-        );
+        const request = await axios
+          .post(`${process.env.REACT_APP_SERVER_URL}/api/send-otp`, formdata)
+          .catch((err) => {
+            stopLoading();
+            toast.error(err.response.data.message);
+          });
         if (request.status === 200) {
           stopLoading();
-          toast.success("OTP sent successfully!!");
+          toast.success("OTP sent successfully");
           setOtpHashData(request.data);
-        } else {
-          stopLoading();
-          toast.error("Something went wrong!!");
         }
       }
     }
