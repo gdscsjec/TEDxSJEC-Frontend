@@ -5,7 +5,7 @@ const ParentWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: max-content;
+  height: 100vh;
   width: 100vw;
   background-color: black;
   overflow-x: hidden;
