@@ -94,6 +94,12 @@ const Form = () => {
           description: "TEDxSJEC 2022",
           image: "https://sjec.ac.in/images/sjec-logo.png",
           order_id: id,
+          modal: {
+            ondismiss: function() {
+              stopLoading();
+              toast.error("Payment cancelled!");
+            }
+          },
           handler: async function (response) {
             let formdata = new FormData();
             formdata.append("name", form.name);
