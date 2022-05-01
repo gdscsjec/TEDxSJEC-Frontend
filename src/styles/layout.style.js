@@ -15,9 +15,9 @@ const ChildWrapper = styled.div`
   padding: 40px 40px;
   height: max-content;
   width: max-content;
-  background-color: white;
+  background-color: black;
   border-radius: 10px;
-  box-shadow: 0px 0px 10px #000000;
+  box-shadow: 0px 0px 10px #444;
   @media (max-width: 600px) {
     width: 90vw;
     height: max-content;
@@ -30,23 +30,18 @@ const ImageWrapper = styled.img`
   margin: 10px;
 `;
 
-const TicketTitle = styled.div`
-  font-size: 2.2rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  text-align: center;
-`;
-
 const TicketHeading = styled.div`
   font-weight: bold;
 `;
 
 const TicketSection = styled.div`
-  padding: 10px 20px;
+  padding: 10px 25px;
 `;
 
 const TicketText = styled.div`
+  color: #ddd;
   font-size: 0.9rem;
+  font-weight: 100;
 `;
 
 const QRCodeContainer = styled.div`
@@ -68,7 +63,6 @@ const OrderId = styled.div`
 `;
 
 const ErrorText = styled.div`
-  color: #fff;
   font-size: 2rem;
 `;
 
@@ -76,7 +70,6 @@ export {
   ParentWrapper,
   ChildWrapper,
   ImageWrapper,
-  TicketTitle,
   TicketSection,
   TicketHeading,
   TicketText,

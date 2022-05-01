@@ -2,14 +2,15 @@ import axios from "axios";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Logo from "../components/Logo";
-import { ParentWrapper, ChildWrapper, QRCodeContainer, TicketTitle, TicketSection, TicketHeading, TicketText, OrderIdContainer, OrderId, ErrorText } from "../styles/layout.style";
+import { ParentWrapper, ChildWrapper, QRCodeContainer, TicketSection, TicketHeading, TicketText, OrderIdContainer, OrderId, ErrorText } from "../styles/layout.style";
 import QRCode from "react-qr-code";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
+// Optional import
+// import jsPDF from "jspdf";
 import Lottie from 'react-lottie';
 import notFoundAnimation from '../lotties/not-found.json';
 import LoadingOverlay from "react-loading-overlay";
 import loadingContext from "../context/loadingContext";
+import { toPng } from 'dom-to-image';
 
 const defaultAnimationOptions = {
   loop: true,
@@ -50,25 +51,39 @@ const Ticket = () => {
     }, 2000)
   }, [params.id, startLoading, stopLoading]);
 
-  const download = () => {
+  const downloadImage = () => {
     const input = document.getElementById("tedxsjec-ticket");
-    html2canvas(input).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      // window.open(imgData)
-      const pdf = new jsPDF();
-      pdf.addImage(imgData, "JPEG", 0, 0);
-      pdf.save(`TEDxSJEC-2022-Ticket-${params.id}.pdf`);
+    toPng(input).then(function (dataUrl) {
+      var img = new Image();
+      img.src = dataUrl;
+      document.body.appendChild(img);
+      var link = document.createElement('a');
+      link.download = `TEDxSJEC-2022-Ticket-${params.id}`;
+      link.href = img.src;
+      link.click();
+      
+      // Code for PDF download
+      // const pdf = new jsPDF();
+      // var width = pdf.internal.pageSize.getWidth();
+      // var height = pdf.internal.pageSize.getHeight();
+      // pdf.addImage(img.src, "PNG", 0, 0, width, height);
+      // pdf.save(`TEDxSJEC-2022-Ticket-${params.id}.pdf`);
+
+      document.body.removeChild(img)
+    })
+    .catch(function (error) {
+      console.error('Oops, something went wrong!', error);
     });
   };
 
   return (
     <LoadingOverlay active={loading} spinner text="Loading.....">
       <ParentWrapper>
-        <Logo />
-        {ticket ? (
+        { loading ? <Logo /> : 
+        (ticket ? (
           <>
             <ChildWrapper id="tedxsjec-ticket">
-              <TicketTitle>TEDx Ticket</TicketTitle>
+              <Logo />
               <div style={{ display: 'flex' }}>
                 <TicketSection>
                   <TicketHeading>NAME</TicketHeading>
@@ -99,14 +114,14 @@ const Ticket = () => {
                   </TicketText>
                 </TicketSection>
                 <TicketSection>
-                  <TicketHeading>VENUE</TicketHeading>
+                  <TicketHeading>TIME</TicketHeading>
                   <TicketText>
-                    SJEC, Mangalore
+                    9:00 AM
                   </TicketText>
                 </TicketSection>
               </div>
               <QRCodeContainer>
-                <QRCode value={params.id} size={200} />
+                <QRCode style={{ boxShadow: '0 0 10px #444' }} bgColor="#FFFFFF" fgColor="#000000" value={params.id} size={200} />
               </QRCodeContainer>
               <OrderIdContainer>
                 <OrderId>
@@ -117,7 +132,7 @@ const Ticket = () => {
             <div>
               <button style={{ marginTop: '400px' }}
                   onClick={() => {
-                    download();
+                    downloadImage();
                   }}
                   className="btn btn-tedx mt-3"
                 >
@@ -127,6 +142,7 @@ const Ticket = () => {
         </>)
        : (
         <>
+          <Logo />
           <Lottie 
             options={defaultAnimationOptions}
             height={300}
@@ -139,7 +155,7 @@ const Ticket = () => {
           </div>
         </>
         )        
-      }
+      )}
       </ParentWrapper>
     </LoadingOverlay>  
   );

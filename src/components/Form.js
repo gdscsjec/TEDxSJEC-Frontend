@@ -206,7 +206,7 @@ const Form = () => {
               disabled={status}
               style={{ display: "none" }}
               onChange={saveImage}
-              required="true"
+              required={true}
               accept="image/png, image/jpeg, image/jpg"
               className="form-control"
               type="file"
@@ -222,12 +222,12 @@ const Form = () => {
           </div>
         </div>
         <div className="mb-3">
-          <label for="exampleInputEmail1" className="form-label">
+          <label htmlFor="exampleInputEmail1" className="form-label">
             Name
           </label>
           <input
             disabled={status}
-            required
+            required={true}
             value={form.name}
             onChange={OnChangeValue}
             name="name"
@@ -235,10 +235,11 @@ const Form = () => {
             className="form-control"
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
+            placeholder="Enter your name"
           />
         </div>
         <div className="mb-3">
-          <label for="exampleInputEmail1" className="form-label">
+          <label htmlFor="exampleInputEmail1" className="form-label">
             Email address
           </label>
           <input
@@ -246,15 +247,16 @@ const Form = () => {
             value={form.email}
             onChange={OnChangeValue}
             name="email"
-            required
+            required={true}
             type="email"
             className="form-control"
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
+            placeholder="Enter your email address"
           />
         </div>
         <div className="mb-3">
-          <label for="exampleInputEmail1" className="form-label">
+          <label htmlFor="exampleInputEmail1" className="form-label">
             Phone Number
           </label>
           <input
@@ -262,12 +264,13 @@ const Form = () => {
             value={form.phone}
             onChange={OnChangeValue}
             name="phone"
-            required
+            required={true}
             maxLength={10}
             type="tel"
             className="form-control"
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
+            placeholder="Enter your phone number"
           />
         </div>
 
@@ -288,7 +291,7 @@ const Form = () => {
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
               name="otp"
-              required
+              required={true}
               maxLength={6}
               placeholder="Enter OTP"
               type="number"
@@ -305,7 +308,7 @@ const Form = () => {
           type="submit"
           className=" btn btn-tedx btn btn-block mt-3"
         >
-          Submit
+          Pay Now
         </button>
       </form>
       <Toaster position="top-right" reverseOrder={false} />
