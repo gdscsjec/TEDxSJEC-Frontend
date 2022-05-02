@@ -5,21 +5,13 @@ import toast, { Toaster } from "react-hot-toast";
 import validator from "validator";
 import { useNavigate } from "react-router-dom";
 import loadingContext from "../context/loadingContext";
+import { useQuery } from "react-query";
 
 const Form = () => {
-  const a = useContext(loadingContext);
+  const navigate = useNavigate();
+  const { setLoading } = useContext(loadingContext);
 
   const fileButton = useRef(null);
-
-  const navigate = useNavigate();
-
-  const callSetLoading = () => {
-    a.setLoading(true);
-  };
-
-  const stopLoading = () => {
-    a.setLoading(false);
-  };
 
   const [form, setForm] = useState({
     name: "",
@@ -27,17 +19,7 @@ const Form = () => {
     phone: "",
   });
 
-  const [otpHashData, setOtpHashData] = useState();
-
-  const [status, setStatus] = useState(false);
-
-  const [otp, setOtp] = useState();
-
-  const [image, setImage] = useState("");
-  // ImgUrl is used to get ObjectURL of the image
-  const [imageUrl, setImageUrl] = useState("/static/default_image.png");
-
-  const OnChangeValue = (e) => {
+  const onChangeValue = (e) => {
     const { value, name } = e.target;
     setForm((prev) => {
       return {
@@ -46,38 +28,138 @@ const Form = () => {
       };
     });
   };
+  
+  const startLoading = () => setLoading(true);
+  const stopLoading = () => setLoading(false);
 
-  const OnSubmit = async (e) => {
-    callSetLoading();
-    e.preventDefault();
+  const [otp, setOtp] = useState('');
+  const [otpHashData, setOtpHashData] = useState({});
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  const [image, setImage] = useState("");
+  // ImgUrl is used to get ObjectURL of the image
+  const [imageUrl, setImageUrl] = useState("/static/default_image.png");
+  const [response, setResponse] = useState({});
+
+  // Query for OTP Sending
+  const sendOtpCallback = () => {
     let formdata = new FormData();
     formdata.append("email", form.email);
-    formdata.append("phone", `+91${form.phone}`);
-    formdata.append("otp", otp);
-    formdata.append("hash", otpHashData.hash);
-    const request = await axios
-      .post(`${process.env.REACT_APP_SERVER_URL}/api/verify-otp`, formdata)
-      .catch((err) => {
-        stopLoading();
-        toast.error(err.response.data.message);
-      });
+    formdata.append("phone", `+91${form.phone}`)
+    return axios.post(`${process.env.REACT_APP_SERVER_URL}/api/send-otp`, formdata)
+  }
 
-    if (request.status === 200) {
-      toast.success("OTP verified successfully");
-      const { id, amount, currency } = request.data.payment.orderId;
-      console.log(request.data.payment.orderId);
-      await OnSubmitOrder(id, amount, currency);
+  const { refetch: fetchOtp } = useQuery('send-otp', sendOtpCallback, {
+    enabled: false,
+    onSuccess: (data) => {
+      toast.success("OTP sent successfully");
+      setOtpHashData(data.data);
+    },
+    onError: (error) => {
+      const { message } = JSON.parse(error.request.response);
+      if (message) toast.error(message);
+      // Uncaught cases
+      else toast.error("Something went wrong")
+    },
+    onSettled: () => {
+      stopLoading();
+    }
+  })
+
+  const onClickOtp = (e) => {
+    e.preventDefault();
+    switch (true) {
+      case form.name === "":
+        toast.error("Please enter your name");
+        break;
+      case validator.isEmail(form.email) === false:
+        toast.error("Please enter valid email");
+        break;
+      case validator.isMobilePhone(form.phone, "en-IN") === false:
+        toast.error("Please enter valid phone number");
+        break;
+      case !image:
+        toast.error("Please upload your image");
+        break;
+      default: {
+        setIsDisabled(true);
+        startLoading();
+        fetchOtp();
+      }
     }
   };
 
-  const OnSubmitOrder = async (id, amount, currency) => {
+  // Query for OTP Verification
+  const verifyOtpCallback = () => {
+    let formdata = new FormData ();
+    formdata.append("email", form.email);
+    formdata.append("phone", `+91${form.phone}`);
+    formdata.append("otp", otpHashData.otp);
+    formdata.append("hash", otpHashData.hash);
+    return axios.post(`${process.env.REACT_APP_SERVER_URL}/api/verify-otp`, formdata);
+  }
+
+  const { refetch: fetchVerifyOtp } = useQuery('verify-otp', verifyOtpCallback, {
+    enabled: false,
+    onSuccess: (data) => {
+      console.log(data)
+      toast.success("OTP verified successfully");
+      const { id, amount, currency } = data.data.payment.orderId;
+      console.log(data.data.payment.orderId);
+      OnSubmitOrder(id, amount, currency);
+    },
+    onError: (error) => {
+      stopLoading();
+      const { message } = JSON.parse(error.request.response);
+      if (message) toast.error(message);
+      // Uncaught cases
+      else toast.error("Something went wrong")
+    }
+  })
+
+  const OnSubmit = (e) => {
+    startLoading();
+    e.preventDefault();
+    fetchVerifyOtp();
+  };
+  
+  // Query for payment confirmation
+  const paymentConfirmationCallback = () => {
+    let formdata = new FormData();
+    formdata.append("name", form.name);
+    formdata.append("email", form.email);
+    formdata.append("phone", `+91${form.phone}`);
+    formdata.append("avatar", image);
+    formdata.append("razorpay_order_id", response.razorpay_order_id);
+    formdata.append("razorpay_payment_id", response.razorpay_payment_id);
+    formdata.append("razorpay_signature", response.razorpay_signature);
+    return axios.post(`${process.env.REACT_APP_SERVER_URL}/api/payment-success`, formdata)
+  }
+
+  const { refetch: fetchPaymentConfirm } = useQuery('payment-success', paymentConfirmationCallback, {
+    enabled: false,
+    onSuccess: () => {
+      stopLoading();
+      toast.success("Payment successful");
+      navigate(`/ticket/${response.razorpay_order_id}`);
+    },
+    onError: (error) => {
+      stopLoading();
+      const { message } = JSON.parse(error.request.response);
+      if (message) toast.error(message);
+      // Uncaught cases
+      else toast.error("Something went wrong")
+    }
+  })
+
+  const OnSubmitOrder = (id, amount, currency) => {
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.onerror = () => {
       toast.error("Something went wrong!!");
       stopLoading();
     };
-    script.onload = async () => {
+    script.onload = () => {
       try {
         const options = {
           key: process.env.REACT_APP_RZR_KEY,
@@ -85,41 +167,19 @@ const Form = () => {
           currency: currency,
           name: "St Joseph Engineering College",
           description: "TEDxSJEC 2022",
-          image: "https://sjec.ac.in/images/sjec-logo.png",
+          image: "/static/sjec_logo.jpg",
           order_id: id,
           modal: {
             ondismiss: function () {
               stopLoading();
-              toast.error("Payment cancelled!");
+              toast.error("Payment cancelled");
             },
           },
-          handler: async function (response) {
-            let formdata = new FormData();
-            formdata.append("name", form.name);
-            formdata.append("email", form.email);
-            formdata.append("phone", `+91${form.phone}`);
-            formdata.append("avatar", image);
-            formdata.append("razorpay_order_id", response.razorpay_order_id);
-            formdata.append(
-              "razorpay_payment_id",
-              response.razorpay_payment_id
-            );
-            formdata.append("razorpay_signature", response.razorpay_signature);
-            const request = await axios
-              .post(
-                `${process.env.REACT_APP_SERVER_URL}/api/payment-success`,
-                formdata
-              )
-              .catch((err) => {
-                stopLoading();
-                toast.error(err.response.data.message);
-              });
-
-            if (request.status === 200) {
-              stopLoading();
-              toast.success("Payment successful");
-              navigate(`/ticket/${response.razorpay_order_id}`);
-            }
+          handler: function (response) {
+            setResponse(response);
+            setTimeout(() => {
+              fetchPaymentConfirm();
+            }, 1000)
           },
           prefill: {
             name: form.name,
@@ -138,48 +198,13 @@ const Form = () => {
         paymentObject.open();
       } catch (err) {
         stopLoading();
-        toast.error("Something went wrong!!");
+        toast.error("Something went wrong");
       }
     };
     document.body.appendChild(script);
   };
 
-  const onClickOtp = async (e) => {
-    e.preventDefault();
-    switch (true) {
-      case form.name === "":
-        toast.error("Please enter your name");
-        break;
-      case validator.isEmail(form.email) === false:
-        toast.error("Please enter valid email");
-        break;
-      case validator.isMobilePhone(form.phone, "en-IN") === false:
-        toast.error("Please enter valid phone number");
-        break;
-      case !image:
-        toast.error("Please upload your image");
-        break;
-      default: {
-        setStatus(true);
-        callSetLoading();
-        let formdata = new FormData();
-        formdata.append("email", form.email);
-        formdata.append("phone", `+91${form.phone}`);
-        const request = await axios
-          .post(`${process.env.REACT_APP_SERVER_URL}/api/send-otp`, formdata)
-          .catch((err) => {
-            stopLoading();
-            toast.error(err.response.data.message);
-          });
-        if (request.status === 200) {
-          stopLoading();
-          toast.success("OTP sent successfully");
-          setOtpHashData(request.data);
-        }
-      }
-    }
-  };
-
+  // Utility function to save images (Downloading ticket)
   const saveImage = (e) => {
     const img = URL.createObjectURL(e.target.files[0]);
     setTimeout(() => {
@@ -203,7 +228,7 @@ const Form = () => {
               height="200"
             />
             <input
-              disabled={status}
+              disabled={isDisabled}
               style={{ display: "none" }}
               onChange={saveImage}
               required={true}
@@ -226,10 +251,10 @@ const Form = () => {
             Name
           </label>
           <input
-            disabled={status}
+            disabled={isDisabled}
             required={true}
             value={form.name}
-            onChange={OnChangeValue}
+            onChange={onChangeValue}
             name="name"
             type="text"
             className="form-control"
@@ -243,9 +268,9 @@ const Form = () => {
             Email address
           </label>
           <input
-            disabled={status}
+            disabled={isDisabled}
             value={form.email}
-            onChange={OnChangeValue}
+            onChange={onChangeValue}
             name="email"
             required={true}
             type="email"
@@ -260,9 +285,9 @@ const Form = () => {
             Phone Number
           </label>
           <input
-            disabled={status}
+            disabled={isDisabled}
             value={form.phone}
-            onChange={OnChangeValue}
+            onChange={onChangeValue}
             name="phone"
             required={true}
             maxLength={10}
@@ -277,7 +302,7 @@ const Form = () => {
         <div className="row">
           <div className="col">
             <button
-              disabled={status}
+              disabled={isDisabled}
               type="action"
               onClick={onClickOtp}
               className="btn btn-tedx"
@@ -287,7 +312,7 @@ const Form = () => {
           </div>
           <div className="col">
             <input
-              disabled={!status}
+              disabled={!isDisabled}
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
               name="otp"
@@ -301,7 +326,7 @@ const Form = () => {
         </div>
 
         <button
-          disabled={!status}
+          disabled={!isDisabled}
           style={{
             width: "100%",
           }}

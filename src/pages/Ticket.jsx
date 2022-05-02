@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Logo from "../components/Logo";
 import { ParentWrapper, ChildWrapper, QRCodeContainer, TicketSection, TicketHeading, TicketText, OrderIdContainer, OrderId, ErrorText } from "../styles/layout.style";
@@ -9,8 +9,8 @@ import QRCode from "react-qr-code";
 import Lottie from 'react-lottie';
 import notFoundAnimation from '../lotties/not-found.json';
 import LoadingOverlay from "react-loading-overlay";
-import loadingContext from "../context/loadingContext";
 import { toPng } from 'dom-to-image';
+import { useQuery } from "react-query";
 
 const defaultAnimationOptions = {
   loop: true,
@@ -21,66 +21,51 @@ const defaultAnimationOptions = {
   }
 };
 
+const downloadImage = (id) => {
+  const input = document.getElementById("tedxsjec-ticket");
+  toPng(input).then(function (dataUrl) {
+    var img = new Image();
+    img.src = dataUrl;
+    document.body.appendChild(img);
+    var link = document.createElement('a');
+    link.download = `TEDxSJEC-2022-Ticket-${id}`;
+    link.href = img.src;
+    link.click();
+    
+    // Code for PDF download
+    // const pdf = new jsPDF();
+    // var width = pdf.internal.pageSize.getWidth();
+    // var height = pdf.internal.pageSize.getHeight();
+    // pdf.addImage(img.src, "PNG", 0, 0, width, height);
+    // pdf.save(`TEDxSJEC-2022-Ticket-${params.id}.pdf`);
+
+    document.body.removeChild(img)
+  })
+  .catch(function (error) {
+    console.error('Oops, something went wrong!', error);
+  });
+};
+
 const Ticket = () => {
   const [ticket, setTicket] = useState();
   let params = useParams();
   document.title = `Ticket - ${params.id}  | TEDxSJEC 2022`;
 
-  const { loading, setLoading } = useContext(loadingContext);
-
-  const startLoading = useCallback(() => {
-    setLoading(true);
-  }, [setLoading])
-
-  const stopLoading = useCallback(() => {
-    setLoading(false);
-  }, [setLoading]);
+  const { data: ticketData, isLoading, isError } = useQuery(params.id, () => {
+    return axios.post(`${process.env.REACT_APP_SERVER_URL}/api/ticket?id=${params.id}`)
+  })
   
   useEffect(() => {
-    startLoading();
-    const request = async () => {
-      const response = await axios.post(
-        `https://ted.vigneshcodes.in/api/ticket?id=${params.id}`
-      );
-      setTicket(response.data);
-      console.log(response.data);
-    };
-    request();
-    setTimeout(() => {
-      stopLoading();
-    }, 2000)
-  }, [params.id, startLoading, stopLoading]);
-
-  const downloadImage = () => {
-    const input = document.getElementById("tedxsjec-ticket");
-    toPng(input).then(function (dataUrl) {
-      var img = new Image();
-      img.src = dataUrl;
-      document.body.appendChild(img);
-      var link = document.createElement('a');
-      link.download = `TEDxSJEC-2022-Ticket-${params.id}`;
-      link.href = img.src;
-      link.click();
-      
-      // Code for PDF download
-      // const pdf = new jsPDF();
-      // var width = pdf.internal.pageSize.getWidth();
-      // var height = pdf.internal.pageSize.getHeight();
-      // pdf.addImage(img.src, "PNG", 0, 0, width, height);
-      // pdf.save(`TEDxSJEC-2022-Ticket-${params.id}.pdf`);
-
-      document.body.removeChild(img)
-    })
-    .catch(function (error) {
-      console.error('Oops, something went wrong!', error);
-    });
-  };
+    if(ticketData) {
+      setTicket(ticketData.data)
+    }
+  }, [ticketData]);
 
   return (
-    <LoadingOverlay active={loading} spinner text="Loading.....">
+    <LoadingOverlay active={isLoading} spinner text="Loading.....">
       <ParentWrapper>
-        { loading ? <Logo /> : 
-        (ticket ? (
+        { isLoading ? <Logo /> : 
+        (ticket && !isError ? (
           <>
             <ChildWrapper id="tedxsjec-ticket">
               <Logo />
@@ -131,9 +116,7 @@ const Ticket = () => {
             </ChildWrapper>
             <div>
               <button style={{ marginTop: '400px' }}
-                  onClick={() => {
-                    downloadImage();
-                  }}
+                  onClick={() => downloadImage(params.id)}
                   className="btn btn-tedx mt-3"
                 >
                 Download Ticket
