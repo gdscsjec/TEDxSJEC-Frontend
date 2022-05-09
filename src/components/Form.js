@@ -156,7 +156,7 @@ const Form = () => {
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.onerror = () => {
-      toast.error("Something went wrong!!");
+      toast.error("Something went wrong");
       stopLoading();
     };
     script.onload = () => {
@@ -207,6 +207,10 @@ const Form = () => {
   // Utility function to save images (Downloading ticket)
   const saveImage = (e) => {
     const img = URL.createObjectURL(e.target.files[0]);
+    // Lower limit = 50 KB = 51200 Bytes
+    if (e.target.files[0].size < 51200) return toast.error("Image size must be greater than 50KB");
+    // Upper limit = 1 MB = 1048576 Bytes
+    if (e.target.files[0].size > 1048576) return toast.error("Image size must be less than 1MB");
     setTimeout(() => {
       setImage(e.target.files[0]);
       setImageUrl(img);
