@@ -6,6 +6,7 @@ body {
   font-family: "Nunito", "Montserrat", sans-serif;
   overflow-x: hidden;
   color: #fff;
+  background-color: #000;
 }
 
 .form-control:focus {

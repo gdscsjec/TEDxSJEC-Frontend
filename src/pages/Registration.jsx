@@ -1,6 +1,7 @@
 import React from "react";
 import Form from "../components/Form";
 import Logo from "../components/Logo";
+import Footer from "../components/Footer";
 import { ParentWrapper, ChildWrapper } from "../styles/layout.style";
 import LoadingOverlay from "react-loading-overlay";
 import { useContext } from "react";
@@ -19,6 +20,7 @@ const Registration = () => {
         <ChildWrapper>
           <Form />
         </ChildWrapper>
+        <Footer />
       </ParentWrapper>
     </LoadingOverlay>
   );

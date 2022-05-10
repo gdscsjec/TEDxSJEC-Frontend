@@ -9,6 +9,7 @@ const ParentWrapper = styled.div`
   width: 100vw;
   background-color: black;
   overflow-x: hidden;
+  padding-top: 40px;
 `;
 
 const ChildWrapper = styled.div`
