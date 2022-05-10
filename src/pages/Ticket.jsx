@@ -62,6 +62,30 @@ const Ticket = () => {
   let params = useParams();
   document.title = `Ticket - ${params.id}  | TEDxSJEC 2022`;
 
+  useEffect(() => {
+    const disableContextMenu = (event) => event.preventDefault();
+
+    document.addEventListener('contextmenu', disableContextMenu); 
+    document.onkeydown = function(e) { 
+      if(e.key === "F12") { 
+        return false; 
+      } 
+      if(e.ctrlKey && e.shiftKey && e.code === "KeyI") { 
+        return false; 
+      } 
+      if(e.ctrlKey && e.shiftKey && e.code === 'KeyJ') { 
+        return false; 
+      } 
+      if(e.ctrlKey && e.code === "KeyU") {
+        return false; 
+      } 
+    } 
+
+    return () => { 
+      window.removeEventListener('contextmenu', disableContextMenu);
+    }
+  }, []);
+
   const {
     data: ticketData,
     isLoading,
@@ -147,6 +171,7 @@ const Ticket = () => {
             <Logo />
             <Lottie
               options={defaultAnimationOptions}
+              isClickToPauseDisabled={true}
               height={300}
               width={300}
             />
