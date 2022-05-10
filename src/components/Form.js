@@ -28,11 +28,11 @@ const Form = () => {
       };
     });
   };
-  
+
   const startLoading = () => setLoading(true);
   const stopLoading = () => setLoading(false);
 
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState("");
   const [otpHashData, setOtpHashData] = useState({});
   const [isDisabled, setIsDisabled] = useState(false);
 
@@ -45,11 +45,14 @@ const Form = () => {
   const sendOtpCallback = () => {
     let formdata = new FormData();
     formdata.append("email", form.email);
-    formdata.append("phone", `+91${form.phone}`)
-    return axios.post(`${process.env.REACT_APP_SERVER_URL}/api/send-otp`, formdata)
-  }
+    formdata.append("phone", `+91${form.phone}`);
+    return axios.post(
+      `${process.env.REACT_APP_SERVER_URL}/api/send-otp`,
+      formdata
+    );
+  };
 
-  const { refetch: fetchOtp } = useQuery('send-otp', sendOtpCallback, {
+  const { refetch: fetchOtp } = useQuery("send-otp", sendOtpCallback, {
     enabled: false,
     onSuccess: (data) => {
       toast.success("OTP sent successfully");
@@ -59,12 +62,12 @@ const Form = () => {
       const { message } = JSON.parse(error.request.response);
       if (message) toast.error(message);
       // Uncaught cases
-      else toast.error("Something went wrong")
+      else toast.error("Something went wrong");
     },
     onSettled: () => {
       stopLoading();
-    }
-  })
+    },
+  });
 
   const onClickOtp = (e) => {
     e.preventDefault();
@@ -91,38 +94,45 @@ const Form = () => {
 
   // Query for OTP Verification
   const verifyOtpCallback = () => {
-    let formdata = new FormData ();
+    let formdata = new FormData();
     formdata.append("email", form.email);
     formdata.append("phone", `+91${form.phone}`);
-    formdata.append("otp", otpHashData.otp);
+    formdata.append("otp", otp);
     formdata.append("hash", otpHashData.hash);
-    return axios.post(`${process.env.REACT_APP_SERVER_URL}/api/verify-otp`, formdata);
-  }
+    return axios.post(
+      `${process.env.REACT_APP_SERVER_URL}/api/verify-otp`,
+      formdata
+    );
+  };
 
-  const { refetch: fetchVerifyOtp } = useQuery('verify-otp', verifyOtpCallback, {
-    enabled: false,
-    onSuccess: (data) => {
-      console.log(data)
-      toast.success("OTP verified successfully");
-      const { id, amount, currency } = data.data.payment.orderId;
-      console.log(data.data.payment.orderId);
-      OnSubmitOrder(id, amount, currency);
-    },
-    onError: (error) => {
-      stopLoading();
-      const { message } = JSON.parse(error.request.response);
-      if (message) toast.error(message);
-      // Uncaught cases
-      else toast.error("Something went wrong")
+  const { refetch: fetchVerifyOtp } = useQuery(
+    "verify-otp",
+    verifyOtpCallback,
+    {
+      enabled: false,
+      onSuccess: (data) => {
+        console.log(data);
+        toast.success("OTP verified successfully");
+        const { id, amount, currency } = data.data.payment.orderId;
+        console.log(data.data.payment.orderId);
+        OnSubmitOrder(id, amount, currency);
+      },
+      onError: (error) => {
+        stopLoading();
+        const { message } = JSON.parse(error.request.response);
+        if (message) toast.error(message);
+        // Uncaught cases
+        else toast.error("Something went wrong");
+      },
     }
-  })
+  );
 
   const OnSubmit = (e) => {
     startLoading();
     e.preventDefault();
     fetchVerifyOtp();
   };
-  
+
   // Query for payment confirmation
   const paymentConfirmationCallback = () => {
     let formdata = new FormData();
@@ -133,24 +143,31 @@ const Form = () => {
     formdata.append("razorpay_order_id", response.razorpay_order_id);
     formdata.append("razorpay_payment_id", response.razorpay_payment_id);
     formdata.append("razorpay_signature", response.razorpay_signature);
-    return axios.post(`${process.env.REACT_APP_SERVER_URL}/api/payment-success`, formdata)
-  }
+    return axios.post(
+      `${process.env.REACT_APP_SERVER_URL}/api/payment-success`,
+      formdata
+    );
+  };
 
-  const { refetch: fetchPaymentConfirm } = useQuery('payment-success', paymentConfirmationCallback, {
-    enabled: false,
-    onSuccess: () => {
-      stopLoading();
-      toast.success("Payment successful");
-      navigate(`/ticket/${response.razorpay_order_id}`);
-    },
-    onError: (error) => {
-      stopLoading();
-      const { message } = JSON.parse(error.request.response);
-      if (message) toast.error(message);
-      // Uncaught cases
-      else toast.error("Something went wrong")
+  const { refetch: fetchPaymentConfirm } = useQuery(
+    "payment-success",
+    paymentConfirmationCallback,
+    {
+      enabled: false,
+      onSuccess: () => {
+        stopLoading();
+        toast.success("Payment successful");
+        navigate(`/ticket/${response.razorpay_order_id}`);
+      },
+      onError: (error) => {
+        stopLoading();
+        const { message } = JSON.parse(error.request.response);
+        if (message) toast.error(message);
+        // Uncaught cases
+        else toast.error("Something went wrong");
+      },
     }
-  })
+  );
 
   const OnSubmitOrder = (id, amount, currency) => {
     const script = document.createElement("script");
@@ -179,7 +196,7 @@ const Form = () => {
             setResponse(response);
             setTimeout(() => {
               fetchPaymentConfirm();
-            }, 1000)
+            }, 1000);
           },
           prefill: {
             name: form.name,
@@ -207,10 +224,12 @@ const Form = () => {
   // Utility function to save images (Downloading ticket)
   const saveImage = (e) => {
     const img = URL.createObjectURL(e.target.files[0]);
-    // Lower limit = 50 KB = 51200 Bytes
-    if (e.target.files[0].size < 51200) return toast.error("Image size must be greater than 50KB");
+    // Lower limit = 5 KB = 5120 Bytes
+    if (e.target.files[0].size < 5120)
+      return toast.error("Image size must be greater than 50KB");
     // Upper limit = 1 MB = 1048576 Bytes
-    if (e.target.files[0].size > 1048576) return toast.error("Image size must be less than 1MB");
+    if (e.target.files[0].size > 1048576)
+      return toast.error("Image size must be less than 1MB");
     setTimeout(() => {
       setImage(e.target.files[0]);
       setImageUrl(img);
