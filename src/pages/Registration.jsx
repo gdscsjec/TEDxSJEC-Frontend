@@ -20,8 +20,8 @@ const Registration = () => {
         <ChildWrapper>
           <Form />
         </ChildWrapper>
-        <Footer />
       </ParentWrapper>
+      <Footer />
     </LoadingOverlay>
   );
 };
