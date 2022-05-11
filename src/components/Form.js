@@ -184,7 +184,7 @@ const Form = () => {
           currency: currency,
           name: "St Joseph Engineering College",
           description: "TEDxSJEC 2022",
-          image: "/static/sjec_logo.jpg",
+          image: "https://sjec.ac.in/images/sjec-logo.png",
           order_id: id,
           modal: {
             ondismiss: function () {
