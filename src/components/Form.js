@@ -226,7 +226,7 @@ const Form = () => {
     const img = URL.createObjectURL(e.target.files[0]);
     // Lower limit = 5 KB = 5120 Bytes
     if (e.target.files[0].size < 5120)
-      return toast.error("Image size must be greater than 50KB");
+      return toast.error("Image size must be greater than 5KB");
     // Upper limit = 1 MB = 1048576 Bytes
     if (e.target.files[0].size > 1048576)
       return toast.error("Image size must be less than 1MB");
@@ -249,6 +249,7 @@ const Form = () => {
               draggable="false"
               width="200"
               height="200"
+              onClick={() => fileButton.current.click()}
             />
             <input
               disabled={isDisabled}
@@ -260,12 +261,6 @@ const Form = () => {
               type="file"
               id="formFile"
               ref={fileButton}
-            />
-            <input
-              type="button"
-              className="btn btn-tedx mt-2"
-              onClick={() => fileButton.current.click()}
-              value="Upload Image"
             />
           </div>
         </div>
@@ -302,6 +297,9 @@ const Form = () => {
             aria-describedby="emailHelp"
             placeholder="Enter your email address"
           />
+          <div id="emailHelp" class="form-text">
+            Faculty &amp; Students of SJEC use official email addresses.
+          </div>
         </div>
         <div className="mb-3">
           <label htmlFor="exampleInputEmail1" className="form-label">
