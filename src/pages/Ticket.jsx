@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Logo from "../components/Logo";
+import toast, { Toaster } from "react-hot-toast";
 import {
   ParentWrapper,
   ChildWrapper,
@@ -33,27 +34,30 @@ const defaultAnimationOptions = {
 
 const downloadImage = (id) => {
   const input = document.getElementById("tedxsjec-ticket");
-  toPng(input)
-    .then(function (dataUrl) {
-      var img = new Image();
-      img.src = dataUrl;
-      document.body.appendChild(img);
-      var link = document.createElement("a");
-      link.download = `TEDxSJEC-2022-Ticket-${id}`;
-      link.href = img.src;
-      link.click();
+  toast.promise(
+    toPng(input)
+      .then(function (dataUrl) {
+        var img = new Image();
+        img.src = dataUrl;
+        document.body.appendChild(img);
+        var link = document.createElement("a");
+        link.download = `TEDxSJEC-2022-Ticket-${id}`;
+        link.href = img.src;
+        link.click();
 
-      // Code for PDF download
-      // const pdf = new jsPDF();
-      // var width = pdf.internal.pageSize.getWidth();
-      // var height = pdf.internal.pageSize.getHeight();
-      // pdf.addImage(img.src, "PNG", 0, 0, width, height);
-      // pdf.save(`TEDxSJEC-2022-Ticket-${params.id}.pdf`);
+        // Code for PDF download
+        // const pdf = new jsPDF();
+        // var width = pdf.internal.pageSize.getWidth();
+        // var height = pdf.internal.pageSize.getHeight();
+        // pdf.addImage(img.src, "PNG", 0, 0, width, height);
+        // pdf.save(`TEDxSJEC-2022-Ticket-${params.id}.pdf`);
 
-      document.body.removeChild(img);
-    })
-    .catch(function (error) {
-      console.error("Oops, something went wrong!", error);
+        document.body.removeChild(img);
+      }),
+    {
+      loading: 'Downloading your ticket...',
+      success: <b>Ticket downloaded</b>,
+      error: <b>Could not download ticket</b>
     });
 };
 
@@ -187,6 +191,7 @@ const Ticket = () => {
           </>
         )}
       </ParentWrapper>
+      <Toaster position="top-right" reverseOrder={false} />
     </LoadingOverlay>
   );
 };
