@@ -143,7 +143,7 @@ const Ticket = () => {
               </div>
               <QRCodeContainer>
                 <QRCode
-                  style={{ boxShadow: "0 0 10px #444" }}
+                  style={{ border: "1px solid #FF2B06", boxShadow: '0 0 10px #FF2B06'}}
                   bgColor="#FFFFFF"
                   fgColor="#000000"
                   value={params.id}
@@ -152,7 +152,7 @@ const Ticket = () => {
               </QRCodeContainer>
               <OrderIdContainer>
                 <OrderId>
-                  {params.id ? params.id.toUpperCase() : "Loading..."}
+                  {params.id ? params.id.substring(0, 6).toUpperCase() + params.id.substring(6) : "Loading..."}
                 </OrderId>
               </OrderIdContainer>
             </ChildWrapper>
