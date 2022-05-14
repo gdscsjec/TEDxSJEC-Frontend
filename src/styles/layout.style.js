@@ -20,7 +20,7 @@ const ChildWrapper = styled.div`
   border-radius: 10px;
   box-shadow: 0px 0px 10px #444;
   @media (max-width: 600px) {
-    width: 90vw;
+    width: 80vw;
     height: max-content;
   }
 `;

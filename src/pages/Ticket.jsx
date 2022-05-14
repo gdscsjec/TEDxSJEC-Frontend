@@ -35,59 +35,59 @@ const defaultAnimationOptions = {
 const downloadImage = (id) => {
   const input = document.getElementById("tedxsjec-ticket");
   toast.promise(
-    toPng(input)
-      .then(function (dataUrl) {
-        var img = new Image();
-        img.src = dataUrl;
-        document.body.appendChild(img);
-        var link = document.createElement("a");
-        link.download = `TEDxSJEC-2022-Ticket-${id}`;
-        link.href = img.src;
-        link.click();
+    toPng(input).then(function (dataUrl) {
+      var img = new Image();
+      img.src = dataUrl;
+      document.body.appendChild(img);
+      var link = document.createElement("a");
+      link.download = `TEDxSJEC-2022-Ticket-${id}`;
+      link.href = img.src;
+      link.click();
 
-        // Code for PDF download
-        // const pdf = new jsPDF();
-        // var width = pdf.internal.pageSize.getWidth();
-        // var height = pdf.internal.pageSize.getHeight();
-        // pdf.addImage(img.src, "PNG", 0, 0, width, height);
-        // pdf.save(`TEDxSJEC-2022-Ticket-${params.id}.pdf`);
+      // Code for PDF download
+      // const pdf = new jsPDF();
+      // var width = pdf.internal.pageSize.getWidth();
+      // var height = pdf.internal.pageSize.getHeight();
+      // pdf.addImage(img.src, "PNG", 0, 0, width, height);
+      // pdf.save(`TEDxSJEC-2022-Ticket-${params.id}.pdf`);
 
-        document.body.removeChild(img);
-      }),
+      document.body.removeChild(img);
+    }),
     {
-      loading: 'Downloading your ticket...',
+      loading: "Downloading your ticket...",
       success: <b>Ticket downloaded</b>,
-      error: <b>Could not download ticket</b>
-    });
+      error: <b>Could not download ticket</b>,
+    }
+  );
 };
 
 const Ticket = () => {
   const [ticket, setTicket] = useState();
   let params = useParams();
-  document.title = `Ticket - ${params.id}  | TEDxSJEC 2022`;
+  document.title = `Ticket - ${params.id}  | TEDxSJEC - 2022`;
 
   useEffect(() => {
     const disableContextMenu = (event) => event.preventDefault();
 
-    document.addEventListener('contextmenu', disableContextMenu); 
-    document.onkeydown = function(e) { 
-      if(e.key === "F12") { 
-        return false; 
-      } 
-      if(e.ctrlKey && e.shiftKey && e.code === "KeyI") { 
-        return false; 
-      } 
-      if(e.ctrlKey && e.shiftKey && e.code === 'KeyJ') { 
-        return false; 
-      } 
-      if(e.ctrlKey && e.code === "KeyU") {
-        return false; 
-      } 
-    } 
+    document.addEventListener("contextmenu", disableContextMenu);
+    document.onkeydown = function (e) {
+      if (e.key === "F12") {
+        return false;
+      }
+      if (e.ctrlKey && e.shiftKey && e.code === "KeyI") {
+        return false;
+      }
+      if (e.ctrlKey && e.shiftKey && e.code === "KeyJ") {
+        return false;
+      }
+      if (e.ctrlKey && e.code === "KeyU") {
+        return false;
+      }
+    };
 
-    return () => { 
-      window.removeEventListener('contextmenu', disableContextMenu);
-    }
+    return () => {
+      window.removeEventListener("contextmenu", disableContextMenu);
+    };
   }, []);
 
   const {
@@ -114,7 +114,9 @@ const Ticket = () => {
         ) : ticket && !isError ? (
           <>
             <ChildWrapper id="tedxsjec-ticket">
-              <Logo />
+              <center>
+                <Logo />
+              </center>
               <div style={{ display: "flex" }}>
                 <TicketSection>
                   <TicketHeading>NAME</TicketHeading>
@@ -147,7 +149,10 @@ const Ticket = () => {
               </div>
               <QRCodeContainer>
                 <QRCode
-                  style={{ border: "1px solid #FF2B06", boxShadow: '0 0 10px #FF2B06'}}
+                  style={{
+                    border: "1px solid #FF2B06",
+                    boxShadow: "0 0 10px #FF2B06",
+                  }}
                   bgColor="#FFFFFF"
                   fgColor="#000000"
                   value={params.id}
@@ -156,13 +161,16 @@ const Ticket = () => {
               </QRCodeContainer>
               <OrderIdContainer>
                 <OrderId>
-                  {params.id ? params.id.substring(0, 6).toUpperCase() + params.id.substring(6) : "Loading..."}
+                  {params.id
+                    ? params.id.substring(0, 6).toUpperCase() +
+                      params.id.substring(6)
+                    : "Loading..."}
                 </OrderId>
               </OrderIdContainer>
             </ChildWrapper>
             <div>
               <button
-                style={{ marginTop: "400px" }}
+                style={{ marginTop: "400px", marginBottom: "20px" }}
                 onClick={() => downloadImage(params.id)}
                 className="btn btn-tedx mt-3"
               >
