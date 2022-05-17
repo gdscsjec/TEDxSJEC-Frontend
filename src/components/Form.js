@@ -38,7 +38,7 @@ const Form = () => {
 
   const [image, setImage] = useState("");
   // ImgUrl is used to get ObjectURL of the image
-  const [imageUrl, setImageUrl] = useState("/static/default_image.png");
+  const [imageUrl, setImageUrl] = useState("/static/default_user.svg");
   const [response, setResponse] = useState({});
 
   // Query for OTP Sending

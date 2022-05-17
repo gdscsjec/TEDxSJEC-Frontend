@@ -5,6 +5,7 @@ export const FooterContainer = styled.div`
     top: 20px;
     margin-top: 20px;
     padding-top: 20px;
+    margin-bottom: 10px;
     width: 100vw;
     text-align: center;
     background-color: #111;
