@@ -15,8 +15,6 @@ import {
   ErrorText,
 } from "../styles/layout.style";
 import QRCode from "react-qr-code";
-// Optional import
-// import jsPDF from "jspdf";
 import Lottie from "react-lottie";
 import notFoundAnimation from "../lotties/not-found.json";
 import LoadingOverlay from "react-loading-overlay";
