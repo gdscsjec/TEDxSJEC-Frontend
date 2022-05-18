@@ -41,20 +41,12 @@ const downloadImage = (id) => {
       link.download = `TEDxSJEC-2022-Ticket-${id}`;
       link.href = img.src;
       link.click();
-
-      // Code for PDF download
-      // const pdf = new jsPDF();
-      // var width = pdf.internal.pageSize.getWidth();
-      // var height = pdf.internal.pageSize.getHeight();
-      // pdf.addImage(img.src, "PNG", 0, 0, width, height);
-      // pdf.save(`TEDxSJEC-2022-Ticket-${params.id}.pdf`);
-
       document.body.removeChild(img);
     }),
     {
       loading: "Downloading your ticket...",
-      success: <b>Ticket downloaded</b>,
-      error: <b>Could not download ticket</b>,
+      success: "Ticket downloaded successfully",
+      error: "Could not download ticket",
     }
   );
 };
