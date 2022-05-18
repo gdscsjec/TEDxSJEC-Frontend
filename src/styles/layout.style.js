@@ -65,6 +65,7 @@ const OrderId = styled.div`
 
 const ErrorText = styled.div`
   font-size: 2rem;
+  text-align: center;
 `;
 
 export {
