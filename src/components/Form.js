@@ -111,10 +111,8 @@ const Form = () => {
     {
       enabled: false,
       onSuccess: (data) => {
-        console.log(data);
         toast.success("OTP verified successfully");
         const { id, amount, currency } = data.data.payment.orderId;
-        console.log(data.data.payment.orderId);
         OnSubmitOrder(id, amount, currency);
       },
       onError: (error) => {
