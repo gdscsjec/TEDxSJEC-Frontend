@@ -295,7 +295,7 @@ const Form = () => {
             placeholder="Enter your email address"
           />
           <div id="emailHelp" class="form-text">
-            Faculty &amp; Students of SJEC use official email addresses.
+            Staff &amp; Students of SJEC use official email addresses.
           </div>
         </div>
         <div className="mb-3">
