@@ -134,7 +134,7 @@ const Ticket = () => {
                 </TicketSection>
                 <TicketSection>
                   <TicketHeading>TIME</TicketHeading>
-                  <TicketText>9:00 AM</TicketText>
+                  <TicketText>8:00 AM</TicketText>
                 </TicketSection>
               </div>
               <QRCodeContainer>
