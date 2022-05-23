@@ -295,7 +295,8 @@ const Form = () => {
             placeholder="Enter your email address"
           />
           <div id="emailHelp" class="form-text">
-            Staff &amp; Students of SJEC use official email addresses.
+            Staff &amp; Students of SJEC use official email addresses. <br />
+            OTP will be sent to registered email.
           </div>
         </div>
         <div className="mb-3">
