@@ -22,7 +22,7 @@ const App = () => {
         <Route path="/refund-policy" element={<RefundPolicy />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-and-conditions" element={<Terms />} />
-        <Route path="*" element={<Registration />} />
+        <Route path="*" element={<Down />} />
       </Routes>
     </QueryClientProvider>
   );
