@@ -190,10 +190,16 @@ const Form = () => {
             },
           },
           handler: function (response) {
+            window.onbeforeunload = function() {
+              return 'Please wait while the payment is processing';
+            };
             setResponse(response);
+            toast('Confirming payment', {
+              icon: '⌛',
+            });
             setTimeout(() => {
               fetchPaymentConfirm();
-            }, 1000);
+            }, 100);
           },
           prefill: {
             name: form.name,
@@ -280,6 +286,24 @@ const Form = () => {
         </div>
         <div className="mb-3">
           <label htmlFor="exampleInputEmail1" className="form-label">
+            Phone Number
+          </label>
+          <input
+            disabled={isDisabled}
+            value={form.phone}
+            onChange={onChangeValue}
+            name="phone"
+            required={true}
+            maxLength={10}
+            type="tel"
+            className="form-control"
+            id="exampleInputEmail1"
+            aria-describedby="emailHelp"
+            placeholder="Enter your phone number"
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="exampleInputEmail1" className="form-label">
             Email address
           </label>
           <input
@@ -297,24 +321,6 @@ const Form = () => {
           <div id="emailHelp" class="form-text">
             Staff &amp; Students of SJEC use official email addresses.
           </div>
-        </div>
-        <div className="mb-3">
-          <label htmlFor="exampleInputEmail1" className="form-label">
-            Phone Number
-          </label>
-          <input
-            disabled={isDisabled}
-            value={form.phone}
-            onChange={onChangeValue}
-            name="phone"
-            required={true}
-            maxLength={10}
-            type="tel"
-            className="form-control"
-            id="exampleInputEmail1"
-            aria-describedby="emailHelp"
-            placeholder="Enter your phone number"
-          />
         </div>
 
         <div className="row">
