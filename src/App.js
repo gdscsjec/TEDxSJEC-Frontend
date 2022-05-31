@@ -15,7 +15,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Down />} />
         <Route
-          path="/63c83774-3009-49e2-a6e9-87b8ca9c3ffa/live"
+          path="/8dffda0b-e9a6-4afb-bd59-873b7907807a/live"
           element={<Registration />}
         />
         <Route path="/ticket/:id" element={<Ticket />} />
