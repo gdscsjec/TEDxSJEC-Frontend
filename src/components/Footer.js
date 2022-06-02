@@ -37,8 +37,11 @@ const Footer = () => {
         <TedxRed>
           TED<sup>x</sup>
         </TedxRed>
-        SJEC &amp; DELTA SJEC | This Independent TEDx Event Is Operated Under
-        License From TED
+        SJEC &amp; DELTA SJEC | This Independent{" "}
+        <TedxRed>
+          TED<sup>x</sup>
+        </TedxRed>
+        Event Is Operated Under License From <TedxRed>TED</TedxRed>
       </CopyrightText>
     </FooterContainer>
   );
