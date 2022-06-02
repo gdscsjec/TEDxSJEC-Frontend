@@ -33,10 +33,12 @@ const Footer = () => {
       <SiteLink href="tel:+916362490109">Mr Vignesh : +91-6362490109</SiteLink>
 
       <CopyrightText>
+        Copyright ©2022 All Rights Reserved | Built with ❤️ by
         <TedxRed>
           TED<sup>x</sup>
         </TedxRed>
-        SJEC &copy; 2022 | All Rights Reserved
+        SJEC &amp; DELTA SJEC | This Independent TEDx Event Is Operated Under
+        License From TED
       </CopyrightText>
     </FooterContainer>
   );
