@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+
 html,
 body {
   margin: 0;
@@ -20,7 +21,7 @@ body {
   border-color: rgb(57, 62, 65);
 }
 
-.form-control:disabled  {
+.form-control:disabled {
   color: rgb(213, 209, 203);
   background-color: rgb(43, 39, 41);
   border-color: rgb(57, 62, 65);
@@ -34,7 +35,7 @@ body {
 }
 
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
+input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
   color: rgb(213, 209, 203);
   -webkit-text-fill-color: rgb(213, 209, 203);
@@ -45,7 +46,11 @@ input:-webkit-autofill:focus {
   transition: background-color 5000s ease-in-out 0s;
 }
 
-/* TEDx Button Styles */
+/* TEDx Styles */
+.tedx-color {
+  color: #FF2B06;
+}
+
 .btn-tedx {
   background-color: #FF2B06;
   color: #fff;

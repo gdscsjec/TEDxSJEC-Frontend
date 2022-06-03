@@ -230,9 +230,9 @@ const Form = () => {
     // Lower limit = 5 KB = 5120 Bytes
     if (e.target.files[0].size < 5120)
       return toast.error("Image size must be greater than 5KB");
-    // Upper limit = 1 MB = 1048576 Bytes
-    if (e.target.files[0].size > 1048576)
-      return toast.error("Image size must be less than 1MB");
+    // Upper limit = 10 MB = 10485760 Bytes
+    if (e.target.files[0].size > 10485760)
+      return toast.error("Image size must be less than 10MB");
     setTimeout(() => {
       setImage(e.target.files[0]);
       setImageUrl(img);
@@ -362,6 +362,9 @@ const Form = () => {
         >
           Pay Now
         </button>
+        <div class="form-text" style={{ width: '320px'}}>
+          Registration includes: Breakfast, Snacks, Lunch, and TEDx branded Goodies. The seats will be reserved on a first come first serve basis. The last date of registration is <span class="tedx-color">5th June, 2022</span>.
+        </div>
       </form>
       <Toaster position="top-right" reverseOrder={false} />
     </>
