@@ -190,12 +190,12 @@ const Form = () => {
             },
           },
           handler: function (response) {
-            window.onbeforeunload = function() {
-              return 'Please wait while the payment is processing';
+            window.onbeforeunload = function () {
+              return "Please wait while the payment is processing";
             };
             setResponse(response);
-            toast('Confirming payment', {
-              icon: '⌛',
+            toast("Confirming payment", {
+              icon: "⌛",
             });
             setTimeout(() => {
               fetchPaymentConfirm();
@@ -224,7 +224,6 @@ const Form = () => {
     document.body.appendChild(script);
   };
 
-  // Utility function to save images (Downloading ticket)
   const saveImage = (e) => {
     const img = URL.createObjectURL(e.target.files[0]);
     // Lower limit = 5 KB = 5120 Bytes
@@ -362,8 +361,11 @@ const Form = () => {
         >
           Pay Now
         </button>
-        <div class="form-text" style={{ maxWidth: '320px'}}>
-          Registration includes: Breakfast, Snacks, Lunch, and TEDx branded Goodies. The seats will be reserved on a first come first serve basis. The last date of registration is <span class="tedx-color">5th June, 2022</span>.
+        <div class="form-text" style={{ maxWidth: "320px" }}>
+          Registration includes: Breakfast, Snacks, Lunch, and TEDx branded
+          Goodies. The seats will be reserved on a first come first serve basis.
+          The last date of registration is{" "}
+          <span class="tedx-color">5th June, 2022</span>.
         </div>
       </form>
       <Toaster position="top-right" reverseOrder={false} />
