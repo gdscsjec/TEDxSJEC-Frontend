@@ -37,7 +37,7 @@ const Footer = () => {
         <TedxRed>
           TED<sup>x</sup>
         </TedxRed>
-        SJEC &amp; DELTA SJEC | This Independent{" "}
+        SJEC &amp; DELTA SJEC | This Independent
         <TedxRed>
           TED<sup>x</sup>
         </TedxRed>
