@@ -21,7 +21,7 @@ const Registration = () => {
         <a
           href="https://tedxsjec.in/"
           style={{
-            width: "240px",
+            maxWidth: "240px",
           }}
           className=" btn btn-tedx btn btn-block mt-4"
         >

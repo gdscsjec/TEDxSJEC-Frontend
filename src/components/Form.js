@@ -362,7 +362,7 @@ const Form = () => {
         >
           Pay Now
         </button>
-        <div class="form-text" style={{ width: '320px'}}>
+        <div class="form-text" style={{ maxWidth: '320px'}}>
           Registration includes: Breakfast, Snacks, Lunch, and TEDx branded Goodies. The seats will be reserved on a first come first serve basis. The last date of registration is <span class="tedx-color">5th June, 2022</span>.
         </div>
       </form>
