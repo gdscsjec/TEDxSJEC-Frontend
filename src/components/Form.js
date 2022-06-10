@@ -364,8 +364,6 @@ const Form = () => {
         <div class="form-text" style={{ maxWidth: "320px" }}>
           Registration includes: Breakfast, Snacks, Lunch, and TEDx branded
           Goodies. The seats will be reserved on a first come first serve basis.
-          The last date of registration is{" "}
-          <span class="tedx-color">10th June, 12 noon, 2022</span>.
         </div>
       </form>
       <Toaster position="top-right" reverseOrder={false} />
